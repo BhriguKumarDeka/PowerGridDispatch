@@ -56,24 +56,44 @@ This guide details how to build, run, configure, and maintain the KSPDB Power Fa
 
 ---
 
-## 3. Production Deployment (Cloud Hosting)
+## 3. Production Deployment (Cloud Hosting - Render.com)
 
-### Deploying to Render / Railway / Fly.io
+We have provided a `render.yaml` Infrastructure-as-Code Blueprint specification in the project root. This automates the setup of the PostgreSQL database, the FastAPI backend, and the React frontend on Render.
 
-1. **Database Service**:
-   - Provision a managed PostgreSQL 16 instance.
-   - Set environment variable `DATABASE_URL` pointing to the managed DB connection URI.
+### Automated Blueprint Deployment (Recommended)
 
-2. **Backend Web Service**:
-   - Dockerfile path: `./backend/Dockerfile`
-   - Expose Port: `8000`
-   - Start Command: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
-   - Set env vars: `DATABASE_URL`, `GROQ_API_KEY`, `SEED_ON_STARTUP=true`.
+1. **Push your code to a public or private GitHub repository**.
+2. **Log in to Render** (https://dashboard.render.com).
+3. **Click "New"** at the top right and select **"Blueprint"**.
+4. **Connect your GitHub repository** to Render.
+5. **Name your Blueprint Group** (e.g., `kspdb-fault-system`).
+6. Render will automatically read the `render.yaml` configuration and provision:
+   - A **PostgreSQL Database** instance named `propel-db`
+   - A **Web Service** named `propel-backend` running the FastAPI backend via Docker
+   - A **Web Service** named `propel-frontend` running the React Nginx server via Docker
+7. **Configure parameters** before clicking Apply:
+   - Provide your `GROQ_API_KEY` (if you want LLM operator briefs enabled).
+8. **Click "Apply"**. Render will deploy all three services in the correct order (Database -> Backend -> Frontend).
 
-3. **Frontend Static Web Service**:
-   - Dockerfile path: `./frontend/Dockerfile`
-   - Expose Port: `80`
-   - Nginx proxy configuration maps `/api/` and `/ws` to the backend URL.
+### Network & Environment Variable Verification
+- **`DATABASE_URL`**: Render automatically binds the internal connection string of the database to the backend. Our backend config automatically detects and converts standard PostgreSQL connection strings to `postgresql+asyncpg://` compatibility on startup.
+- **`BACKEND_URL`**: The frontend service relies on the internal host/port of the backend service (`propel-backend:8000`). This is mapped automatically by Render via the blueprint. The frontend `start.sh` script templates Nginx at runtime to proxy `/api/` and `/ws` requests to this backend URL.
+
+### Manual Setup (Without Blueprint)
+If you prefer not to use the Blueprint, you can create them manually:
+
+1. **Database**:
+   - Create a PostgreSQL Database. Retrieve its external/internal connection string.
+2. **Backend**:
+   - Create a Web Service. Select **Docker** as the runtime. Set the Docker Context to `./backend` and Dockerfile Path to `./backend/Dockerfile`.
+   - Set environment variables:
+     - `DATABASE_URL` = `postgresql+asyncpg://[db-user]:[db-password]@[db-host]:5432/[db-name]`
+     - `SEED_ON_STARTUP` = `true`
+     - `GROQ_API_KEY` = `[your-api-key]`
+3. **Frontend**:
+   - Create a Web Service. Select **Docker** as the runtime. Set the Docker Context to `./frontend` and Dockerfile Path to `./frontend/Dockerfile`.
+   - Set environment variable:
+     - `BACKEND_URL` = `[internal-host-of-backend]:8000` (e.g. `propel-backend.render.internal:8000` or whatever internal address Render assigns it).
 
 ---
 
