@@ -1,0 +1,33 @@
+/* Matte Charcoal Design System Tokens (Zero Blue/Slate) */
+:root {
+  --bg-page: #0b0c0e;
+  --bg-sidebar: #121316;
+  --bg-container: #16171a;
+  --bg-card: #1c1d22;
+  --bg-elevated: #24262d;
+  --bg-active: #2e303a;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.25);
+
+  --text-white: #ffffff;
+  --text-primary: #e2e4e9;
+  --text-secondary: #8a8d93;
+  --text-muted: #52555a;
+
+  --accent-red: #f87171;
+  --accent-red-bg: rgba(248, 113, 113, 0.14);
+  --accent-amber: #fbbf24;
+  --accent-amber-bg: rgba(251, 191, 36, 0.14);
+  --accent-emerald: #34d399;
+  --accent-emerald-bg: rgba(52, 211, 153, 0.14);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+}
