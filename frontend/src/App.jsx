@@ -8,7 +8,8 @@ import { GridMap } from './components/map/GridMap';
 import { GridSummary } from './components/sidebar/GridSummary';
 import { IssueQueue } from './components/sidebar/IssueQueue';
 import { InspectionModal } from './components/modals/InspectionModal';
-import { SimulatorModal } from './components/modals/SimulatorModal';
+import { SandboxPanel } from './components/sidebar/SandboxPanel';
+
 
 function App() {
   const [status, setStatus] = useState('connecting');
@@ -222,14 +223,14 @@ function App() {
         unackCount={unackCount}
         status={status}
         wsConnected={wsConnected}
-        onOpenConsole={(tab) => { setShowSimulator(true); setSimTab(tab); }}
+        onOpenConsole={(tab) => { setActiveNav('sandbox'); setSimTab(tab); }}
       />
 
       <div className="flex-1 flex flex-col p-5 gap-4 overflow-hidden">
         <TopHeader
           unackCount={unackCount}
           activeCount={activeCount}
-          onOpenConsole={(tab) => { setShowSimulator(true); setSimTab(tab); }}
+          onOpenConsole={(tab) => { setActiveNav('sandbox'); setSimTab(tab); }}
         />
 
         <div className="flex flex-1 gap-5 overflow-hidden">
@@ -265,12 +266,23 @@ function App() {
                   <motion.div layoutId="panelTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
                 )}
               </button>
+              <button
+                className={`flex-1 pb-1 text-center text-[10px] font-semibold tracking-widest transition-all relative ${
+                  activeNav === 'sandbox' ? 'text-white' : 'text-gray-400 hover:text-white'
+                }`}
+                onClick={() => setActiveNav('sandbox')}
+              >
+                SANDBOX
+                {activeNav === 'sandbox' && (
+                  <motion.div layoutId="panelTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
+                )}
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto pr-0.5 flex flex-col min-h-0">
               {activeNav === 'dashboard' ? (
                 <GridSummary stats={stats} wsConnected={wsConnected} />
-              ) : (
+              ) : activeNav === 'incidents' ? (
                 <IssueQueue
                   tickets={tickets}
                   selectedTicket={selectedTicket}
@@ -280,6 +292,32 @@ function App() {
                   onSelectTicket={setSelectedTicket}
                   onStatusTransition={handleStatusTransition}
                   onRepairTicket={handleRepairTicket}
+                />
+              ) : (
+                <SandboxPanel
+                  simTab={simTab}
+                  setSimTab={setSimTab}
+                  simMessage={simMessage}
+                  faultType={faultType}
+                  setFaultType={setFaultType}
+                  targetId={targetId}
+                  setTargetId={setTargetId}
+                  noiseType={noiseType}
+                  setNoiseType={setNoiseType}
+                  noiseTarget={noiseTarget}
+                  setNoiseTarget={setNoiseTarget}
+                  outageScope={outageScope}
+                  setOutageScope={setOutageScope}
+                  outageTarget={outageTarget}
+                  setOutageTarget={setOutageTarget}
+                  outageDuration={outageDuration}
+                  setOutageDuration={setOutageDuration}
+                  outageReason={outageReason}
+                  setOutageReason={setOutageReason}
+                  onInjectFault={handleInjectFault}
+                  onInjectNoise={handleInjectNoise}
+                  onCreateOutage={handleCreateScheduledOutage}
+                  onResetSystem={handleResetSystem}
                 />
               )}
             </div>
@@ -294,34 +332,6 @@ function App() {
         onRepairTicket={handleRepairTicket}
         onGenerateAi={handleGenerateAi}
         loadingAi={loadingAi}
-      />
-
-      <SimulatorModal
-        show={showSimulator}
-        onClose={() => setShowSimulator(false)}
-        simTab={simTab}
-        setSimTab={setSimTab}
-        simMessage={simMessage}
-        faultType={faultType}
-        setFaultType={setFaultType}
-        targetId={targetId}
-        setTargetId={setTargetId}
-        noiseType={noiseType}
-        setNoiseType={setNoiseType}
-        noiseTarget={noiseTarget}
-        setNoiseTarget={setNoiseTarget}
-        outageScope={outageScope}
-        setOutageScope={setOutageScope}
-        outageTarget={outageTarget}
-        setOutageTarget={setOutageTarget}
-        outageDuration={outageDuration}
-        setOutageDuration={setOutageDuration}
-        outageReason={outageReason}
-        setOutageReason={setOutageReason}
-        onInjectFault={handleInjectFault}
-        onInjectNoise={handleInjectNoise}
-        onCreateOutage={handleCreateScheduledOutage}
-        onResetSystem={handleResetSystem}
       />
     </div>
   );
