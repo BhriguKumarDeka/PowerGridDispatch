@@ -1,0 +1,44 @@
+databases:
+  - name: propel-db
+    plan: free
+    databaseName: propel
+    user: propel
+
+services:
+  # ── Backend API ──────────────────────────────────────
+  - type: web
+    name: propel-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: propel-db
+          property: connectionString
+        # Render gives psycopg2 URL; we need asyncpg format
+        # Override below with the correct prefix
+      - key: SEED_ON_STARTUP
+        value: "true"
+      - key: GROQ_API_KEY
+        sync: false  # Manually set in Render dashboard
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: OPENAI_API_KEY
+        value: ""
+    healthCheckPath: /api/health
+
+  # ── Frontend (Nginx + React) ─────────────────────────
+  - type: web
+    name: propel-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          name: propel-backend
+          type: web
+          property: hostport
