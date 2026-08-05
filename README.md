@@ -80,10 +80,11 @@ This system ingests streaming IoT telemetry from **4,774 LT poles** across **71 
 ## 📑 Documentation Directory
 
 - 📐 [**ARCHITECTURE.md**](file:///c:/Users/DEXTER/Desktop/Propel/ARCHITECTURE.md): Deep-dive system design, DAG graph theory, spatial tree reconstruction math, and database schemas.
-- 🚀 [**DEPLOYMENT.md**](file:///c:/Users/DEXTER/Desktop/Propel/DEPLOYMENT.md): Step-by-step production deployment, Docker setup, and environment variables.
+- 🎓 [**TECHNICAL_DEEPDIVE.md**](file:///c:/Users/DEXTER/Desktop/Propel/TECHNICAL_DEEPDIVE.md): Detailed algorithm math, topological logic, trade-offs, and demo video script.
+- 🚀 [**DEPLOYMENT.md**](file:///c:/Users/DEXTER/Desktop/Propel/DEPLOYMENT.md): Step-by-step production deployment, Docker setup, Render blueprint, and troubleshooting.
 - ⚖️ [**DECISIONS.md**](file:///c:/Users/DEXTER/Desktop/Propel/DECISIONS.md): Architectural trade-offs, graph theory vs. LLM reasoning, and noise handling rules.
 - 🤖 [**AI-WORKFLOW.md**](file:///c:/Users/DEXTER/Desktop/Propel/AI-WORKFLOW.md): AI pair programming process and Groq LLM dispatch brief integration.
-- 🎓 [**Interview Prep Guides**](file:///c:/Users/DEXTER/Desktop/Propel/docs/interview_prep/): Comprehensive interview cheatsheets and real-world utility case studies.
+
 
 ---
 
